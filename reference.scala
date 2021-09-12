@@ -97,4 +97,24 @@ table_view.write.format("parquet").mode("overwrite").save("adl://adlsdirectory.a
 
 
 
+// CONNECT TO DB
+
+// CONNECTIONS CREDENTIALS
+val sqldw_scope: String = "scope_name"
+val sqldw_user: String = dbutils.secrets.get(scope = sqldw_scope, key = "username")
+val sqldw_pwd: String = dbutils.secrets.get(scope = sqldw_scope, key = "password")
+
+// CONNECTION DETAILS
+val sqldw_hostname: String = "host_name"
+val sqldw_database: String = "db_name"
+val sqldw_port: Int = 0000 // usually 1433
+val jdbc_url: String = s"jdbc:sqlserver://${sqldw_hostname}.database.windows.net:${sqldw_port};database=${sqldw_database}"
+val driver: String = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+
+def connectionOptions = Map(
+	"user" -> sqldw_user,
+	"password" -> sqldw_pwd,
+	"driver" -> driver,
+	"query" -> "select * some_table"
+	)
 
