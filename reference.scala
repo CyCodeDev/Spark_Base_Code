@@ -90,4 +90,11 @@ spark_session.read
 	.load("dbfs:/mnt/adls/sandbox/directory/initials")
 	.createOrReplaceTempView("sandbox_temp_view")
 
-spark.session.sql(""" select * from sandbox_temp_view """)
+// WRITE TO ADLS
+
+val table_view = spark.session.sql(""" select * from sandbox_temp_view """).repartitoin(20, col("partition_column")).persist()
+table_view.write.format("parquet").mode("overwrite").save("adl://adlsdirectory.azuredatalakestore.net/directory/to/choose")
+
+
+
+
