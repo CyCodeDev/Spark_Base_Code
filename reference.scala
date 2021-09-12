@@ -76,3 +76,18 @@ val spark_session = SparkSession
 // Parse function
 val split_string = (input: String, delim: String, i: Int_) => scala.util.Try(input.split(s"[${delim}]")(i-1)).getOrCreate(null)
 spark_session.udf.register("split_string", split_string)
+
+
+
+// Read parquet from adls mount location
+spark_session.read
+	.format("parquet")
+	.option("inferSchema", "true")
+	.option("recursiveFileLookup", "false")
+	.option("ignoreLeadingWhiteSpace", "true")
+	.option("ignoreTrailingWhiteSpace", "true")
+	.option("mergeSchema", "true")
+	.load("dbfs:/mnt/adls/sandbox/directory/initials")
+	.createOrReplaceTempView("sandbox_temp_view")
+
+spark.session.sql(""" select * from sandbox_temp_view """)
