@@ -64,3 +64,15 @@ dbutils.fs.mount(
 	extraConfigs = configs
 	)
 
+// Begin spark entry point/session
+
+val spark_session = SparkSession
+	.builder()
+	.appName("My App")
+	.master("local[*]")
+	.config("spark.sql.join.preferSorgMergeJoin", "true")
+	.getOrCreate()
+
+// Parse function
+val split_string = (input: String, delim: String, i: Int_) => scala.util.Try(input.split(s"[${delim}]")(i-1)).getOrCreate(null)
+spark_session.udf.register("split_string", split_string)
